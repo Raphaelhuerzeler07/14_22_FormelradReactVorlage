@@ -11,7 +11,14 @@ export default function Formelrad() {
 
     function handleSubmit(e) {
         e.preventDefault();
-        // Berechnungslogik folgt in späteren Patches
+
+        const p = parseFloat(values.p);
+        const i = parseFloat(values.i);
+
+        if (!isNaN(p) && !isNaN(i)) {
+            const u = p / i;
+            setValues(values => ({ ...values, u: u.toFixed(2) }));
+        }
     }
 
     return (
