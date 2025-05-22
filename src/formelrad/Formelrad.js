@@ -14,10 +14,23 @@ export default function Formelrad() {
 
         const p = parseFloat(values.p);
         const i = parseFloat(values.i);
+        const r = parseFloat(values.r);
 
+        // Fall 1: P und I → U berechnen
         if (!isNaN(p) && !isNaN(i)) {
             const u = p / i;
             setValues(values => ({ ...values, u: u.toFixed(2) }));
+        }
+
+        // Fall 2: P und R → U und I berechnen
+        else if (!isNaN(p) && !isNaN(r)) {
+            const u = Math.sqrt(p * r);
+            const i = Math.sqrt(p / r);
+            setValues(values => ({
+                ...values,
+                u: u.toFixed(2),
+                i: i.toFixed(2)
+            }));
         }
     }
 
