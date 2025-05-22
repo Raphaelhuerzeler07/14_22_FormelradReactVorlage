@@ -9,11 +9,47 @@ export default function Formelrad() {
         p: ""
     });
 
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        const p = parseFloat(values.p);
+        const i = parseFloat(values.i);
+        const r = parseFloat(values.r);
+
+        // Fall 1: P und I → U
+        if (!isNaN(p) && !isNaN(i)) {
+            const u = p / i;
+            setValues(values => ({ ...values, u: u.toFixed(2) }));
+        }
+
+        // Fall 2: P und R → U & I
+        else if (!isNaN(p) && !isNaN(r)) {
+            const u = Math.sqrt(p * r);
+            const i = Math.sqrt(p / r);
+            setValues(values => ({
+                ...values,
+                u: u.toFixed(2),
+                i: i.toFixed(2)
+            }));
+        }
+
+        // Fall 3: I und R → U & P
+        else if (!isNaN(i) && !isNaN(r)) {
+            const u = i * r;
+            const p = i * i * r;
+            setValues(values => ({
+                ...values,
+                u: u.toFixed(2),
+                p: p.toFixed(2)
+            }));
+        }
+    }
+
     return (
         <>
             <h2>Formelrad</h2>
             <img src={formelrad} width="200" alt="Formelrad" />
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div>
                     <label>Spannung</label>
                     <input
