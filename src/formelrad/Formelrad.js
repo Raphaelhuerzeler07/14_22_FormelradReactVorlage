@@ -4,7 +4,7 @@ export default function Formelrad() {
     return (
         <>
             <h2>Formelrad</h2>
-            <img src={formelrad} width="200" alt="Formelrad"/>
+            <img src={formelrad} width="200" alt="Formelrad" />
             <form>
                 <div>
                     <label>Spannung</label><input></input>
@@ -15,7 +15,7 @@ export default function Formelrad() {
                 <div>
                     <label>Widerstand</label><input></input>
                 </div>
-                <button type="submit">Calculate</button>
+                <button type="submit">Calculate</button>L
             </form>
         </>
     )
