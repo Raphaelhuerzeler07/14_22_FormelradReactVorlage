@@ -9,11 +9,16 @@ export default function Formelrad() {
         p: ""
     });
 
+    function handleSubmit(e) {
+        e.preventDefault();
+        // Berechnungslogik folgt in späteren Patches
+    }
+
     return (
         <>
             <h2>Formelrad</h2>
             <img src={formelrad} width="200" alt="Formelrad" />
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div>
                     <label>Spannung</label>
                     <input
