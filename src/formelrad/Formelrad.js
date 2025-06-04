@@ -1,5 +1,6 @@
 import { useState } from "react";
 import formelrad from "../image/formelradelektronik.gif";
+import InputField from "../formular/InputField"; // <- NEU
 
 export default function Formelrad() {
     const [values, setValues] = useState({
@@ -60,42 +61,34 @@ export default function Formelrad() {
             <h2>Formelrad</h2>
             <img src={formelrad} width="200" alt="Formelrad" />
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Spannung</label>
-                    <input
-                        value={values.u}
-                        onChange={e =>
-                            setValues(values => ({ ...values, u: e.target.value }))
-                        }
-                    />
-                </div>
-                <div>
-                    <label>Strom</label>
-                    <input
-                        value={values.i}
-                        onChange={e =>
-                            setValues(values => ({ ...values, i: e.target.value }))
-                        }
-                    />
-                </div>
-                <div>
-                    <label>Widerstand</label>
-                    <input
-                        value={values.r}
-                        onChange={e =>
-                            setValues(values => ({ ...values, r: e.target.value }))
-                        }
-                    />
-                </div>
-                <div>
-                    <label>Leistung</label>
-                    <input
-                        value={values.p}
-                        onChange={e =>
-                            setValues(values => ({ ...values, p: e.target.value }))
-                        }
-                    />
-                </div>
+                <InputField
+                    label="Spannung"
+                    value={values.u}
+                    onChange={e =>
+                        setValues(values => ({ ...values, u: e.target.value }))
+                    }
+                />
+                <InputField
+                    label="Strom"
+                    value={values.i}
+                    onChange={e =>
+                        setValues(values => ({ ...values, i: e.target.value }))
+                    }
+                />
+                <InputField
+                    label="Widerstand"
+                    value={values.r}
+                    onChange={e =>
+                        setValues(values => ({ ...values, r: e.target.value }))
+                    }
+                />
+                <InputField
+                    label="Leistung"
+                    value={values.p}
+                    onChange={e =>
+                        setValues(values => ({ ...values, p: e.target.value }))
+                    }
+                />
                 <button type="submit">Calculate</button>
             </form>
         </>
