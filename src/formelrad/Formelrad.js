@@ -12,18 +12,15 @@ export default function Formelrad() {
     function handleSubmit(e) {
         e.preventDefault();
 
-        const p = parseFloat(values.p);
+        const u = parseFloat(values.u);
         const i = parseFloat(values.i);
         const r = parseFloat(values.r);
+        const p = parseFloat(values.p);
 
-        // Fall 1: P und I → U
         if (!isNaN(p) && !isNaN(i)) {
             const u = p / i;
             setValues(values => ({ ...values, u: u.toFixed(2) }));
-        }
-
-        // Fall 2: P und R → U & I
-        else if (!isNaN(p) && !isNaN(r)) {
+        } else if (!isNaN(p) && !isNaN(r)) {
             const u = Math.sqrt(p * r);
             const i = Math.sqrt(p / r);
             setValues(values => ({
@@ -31,15 +28,28 @@ export default function Formelrad() {
                 u: u.toFixed(2),
                 i: i.toFixed(2)
             }));
-        }
-
-        // Fall 3: I und R → U & P
-        else if (!isNaN(i) && !isNaN(r)) {
+        } else if (!isNaN(i) && !isNaN(r)) {
             const u = i * r;
             const p = i * i * r;
             setValues(values => ({
                 ...values,
                 u: u.toFixed(2),
+                p: p.toFixed(2)
+            }));
+        } else if (!isNaN(u) && !isNaN(r)) {
+            const i = u / r;
+            const p = (u * u) / r;
+            setValues(values => ({
+                ...values,
+                i: i.toFixed(2),
+                p: p.toFixed(2)
+            }));
+        } else if (!isNaN(u) && !isNaN(i)) {
+            const r = u / i;
+            const p = u * i;
+            setValues(values => ({
+                ...values,
+                r: r.toFixed(2),
                 p: p.toFixed(2)
             }));
         }
