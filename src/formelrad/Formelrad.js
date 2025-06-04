@@ -44,6 +44,14 @@ export default function Formelrad() {
                 i: i.toFixed(2),
                 p: p.toFixed(2)
             }));
+        } else if (!isNaN(u) && !isNaN(i)) {
+            const r = u / i;
+            const p = u * i;
+            setValues(values => ({
+                ...values,
+                r: r.toFixed(2),
+                p: p.toFixed(2)
+            }));
         }
     }
 
