@@ -10,63 +10,82 @@ export default function Formelrad() {
         r: "",
         p: ""
     });
-
-    const [message, setMessage] = useState(""); // Message-Feld
+    const [message, setMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     const handleSubmit = (event) => {
         event.preventDefault();
         setMessage("");
+        setSuccessMessage("");
 
-        // Zähle wie viele Felder leer sind
-        const filledFields = Object.values(values).filter(v => v !== "" && !isNaN(Number(v)));
-        if (filledFields.length < 2) {
-            setMessage("Bitte mindestens zwei Werte eingeben!");
-            return;
-        }
-
-        // Umwandlung in Zahlen
         const u = parseFloat(values.u);
         const i = parseFloat(values.i);
         const r = parseFloat(values.r);
         const p = parseFloat(values.p);
 
-        // Die Berechnungslogik (vereinfacht, du kannst sie wie bisher verwenden!)
-        if (values.u === "" && values.i === "") {
+        // Mindestens zwei Felder müssen gesetzt sein!
+        const filled = [!isNaN(u), !isNaN(i), !isNaN(r), !isNaN(p)].filter(Boolean).length;
+        if (filled < 2) {
+            setMessage("Bitte mindestens zwei Werte eingeben!");
+            return;
+        }
+
+        // U und I leer → rechne U und I
+        if (values.u === "" && values.i === "" && !isNaN(p) && !isNaN(r)) {
             setValues(values => ({
                 ...values,
-                u: Math.sqrt(values.p * values.r),
-                i: Math.sqrt(values.p / values.r)
+                u: Math.sqrt(p * r).toFixed(2),
+                i: Math.sqrt(p / r).toFixed(2)
             }));
-        } else if (values.u === "" && values.r === "") {
+            setSuccessMessage("Spannung (U) und Stromstärke (I) wurden berechnet!");
+        }
+        // U und R leer → rechne U und R
+        else if (values.u === "" && values.r === "" && !isNaN(p) && !isNaN(i)) {
             setValues(values => ({
                 ...values,
-                u: values.p / values.i,
-                r: values.p / values.i / values.i
+                u: (p / i).toFixed(2),
+                r: (p / (i * i)).toFixed(2)
             }));
-        } else if (values.u === "" && values.p === "") {
+            setSuccessMessage("Spannung (U) und Widerstand (R) wurden berechnet!");
+        }
+        // U und P leer → rechne U und P
+        else if (values.u === "" && values.p === "" && !isNaN(i) && !isNaN(r)) {
             setValues(values => ({
                 ...values,
-                u: values.i * values.r,
-                p: values.i * values.i * values.r
+                u: (i * r).toFixed(2),
+                p: (i * i * r).toFixed(2)
             }));
-        } else if (values.i === "" && values.r === "") {
+            setSuccessMessage("Spannung (U) und Leistung (P) wurden berechnet!");
+        }
+        // I und R leer → rechne I und R
+        else if (values.i === "" && values.r === "" && !isNaN(p) && !isNaN(u)) {
             setValues(values => ({
                 ...values,
-                i: values.p / values.u,
-                r: values.u * values.u / values.p
+                i: (p / u).toFixed(2),
+                r: ((u * u) / p).toFixed(2)
             }));
-        } else if (values.i === "" && values.p === "") {
+            setSuccessMessage("Stromstärke (I) und Widerstand (R) wurden berechnet!");
+        }
+        // I und P leer → rechne I und P
+        else if (values.i === "" && values.p === "" && !isNaN(u) && !isNaN(r)) {
             setValues(values => ({
                 ...values,
-                i: values.u / values.r,
-                p: values.u * values.u / values.r
+                i: (u / r).toFixed(2),
+                p: ((u * u) / r).toFixed(2)
             }));
-        } else {
+            setSuccessMessage("Stromstärke (I) und Leistung (P) wurden berechnet!");
+        }
+        // R und P leer → rechne R und P
+        else if (values.r === "" && values.p === "" && !isNaN(u) && !isNaN(i)) {
             setValues(values => ({
                 ...values,
-                r: values.u / values.i,
-                p: values.u * values.i
+                r: (u / i).toFixed(2),
+                p: (u * i).toFixed(2)
             }));
+            setSuccessMessage("Widerstand (R) und Leistung (P) wurden berechnet!");
+        }
+        else {
+            setMessage("Bitte zwei Werte leer lassen und die anderen ausfüllen.");
         }
     };
 
@@ -77,7 +96,6 @@ export default function Formelrad() {
                     <h2>Formelrad</h2>
                     <img src={formelrad} width="200" alt="Formelrad" />
                 </header>
-                {/* Das Message-Feld */}
                 {message && (
                     <div style={{ color: "red", marginBottom: "1em" }}>
                         {message}
@@ -89,6 +107,11 @@ export default function Formelrad() {
                     <InputField color={"black"} value={values.r} label="Widerstand" handleChange={e => { setValues(values => ({ ...values, r: e.target.value })) }} />
                     <InputField color={"black"} value={values.p} label="Leistung" handleChange={e => { setValues(values => ({ ...values, p: e.target.value })) }} />
                     <button type="submit">Calculate</button>
+                    {successMessage && (
+                        <div style={{ color: "green", marginTop: "1em" }}>
+                            {successMessage}
+                        </div>
+                    )}
                 </form>
             </section>
         </>
