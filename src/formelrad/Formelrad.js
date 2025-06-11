@@ -19,13 +19,11 @@ export default function Formelrad() {
         const p = parseFloat(values.p);
 
         // P und R -> u & i
-        if (!isNaN(r) && !isNaN(p)) {
-            const newU = Math.sqrt(p * r);
-            const newI = Math.sqrt(p / r);
+        if (!isNaN(p) && !isNaN(r)) {
             setValues(values => ({
                 ...values,
-                u: newU.toFixed(2),
-                i: newI.toFixed(2)
+                u: Math.sqrt(p * r).toFixed(2),
+                i: Math.sqrt(p / r).toFixed(2)
             }));
             return;
         }
@@ -56,19 +54,21 @@ export default function Formelrad() {
             }));
             return;
         }
-        // P und I -> u
+        // P und I -> u & r (Patch 16: ergänzt r-Berechnung)
         if (!isNaN(p) && !isNaN(i)) {
             setValues(values => ({
                 ...values,
-                u: (p / i).toFixed(2)
+                u: (p / i).toFixed(2),
+                r: (p / (i * i)).toFixed(2)
             }));
             return;
         }
-        // NEU: I & P -> r (ergänzt mit Patch 15, falls du das brauchst)
-        if (!isNaN(i) && !isNaN(p)) {
+        // U und P -> i & r (Patch 16: ergänzt i&r-Berechnung)
+        if (!isNaN(u) && !isNaN(p)) {
             setValues(values => ({
                 ...values,
-                r: (p / (i * i)).toFixed(2)
+                i: (p / u).toFixed(2),
+                r: ((u * u) / p).toFixed(2)
             }));
             return;
         }
