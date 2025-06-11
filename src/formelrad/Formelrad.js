@@ -18,7 +18,7 @@ export default function Formelrad() {
         const r = parseFloat(values.r);
         const p = parseFloat(values.p);
 
-        // NEU: Falls r und p gegeben, berechne u und i
+        // P und R -> u & i
         if (!isNaN(r) && !isNaN(p)) {
             const newU = Math.sqrt(p * r);
             const newI = Math.sqrt(p / r);
@@ -29,15 +29,7 @@ export default function Formelrad() {
             }));
             return;
         }
-        // Falls p und i gegeben, berechne u
-        if (!isNaN(p) && !isNaN(i)) {
-            setValues(values => ({
-                ...values,
-                u: (p / i).toFixed(2)
-            }));
-            return;
-        }
-        // Falls i und r gegeben, berechne u und p
+        // I und R -> u & p
         if (!isNaN(i) && !isNaN(r)) {
             setValues(values => ({
                 ...values,
@@ -46,7 +38,7 @@ export default function Formelrad() {
             }));
             return;
         }
-        // Falls u und r gegeben, berechne i und p
+        // U und R -> i & p
         if (!isNaN(u) && !isNaN(r)) {
             setValues(values => ({
                 ...values,
@@ -55,12 +47,28 @@ export default function Formelrad() {
             }));
             return;
         }
-        // Falls u und i gegeben, berechne r und p
+        // U und I -> r & p
         if (!isNaN(u) && !isNaN(i)) {
             setValues(values => ({
                 ...values,
                 r: (u / i).toFixed(2),
                 p: (u * i).toFixed(2)
+            }));
+            return;
+        }
+        // P und I -> u
+        if (!isNaN(p) && !isNaN(i)) {
+            setValues(values => ({
+                ...values,
+                u: (p / i).toFixed(2)
+            }));
+            return;
+        }
+        // NEU: I & P -> r (ergänzt mit Patch 15, falls du das brauchst)
+        if (!isNaN(i) && !isNaN(p)) {
+            setValues(values => ({
+                ...values,
+                r: (p / (i * i)).toFixed(2)
             }));
             return;
         }
