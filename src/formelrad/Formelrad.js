@@ -1,7 +1,7 @@
 import { useState } from "react";
+import '../css/mvp.css';
 import formelrad from "../image/formelradelektronik.gif";
 import InputField from "../formular/InputField";
-import OutputField from "../formular/OutputField";
 
 export default function Formelrad() {
     const [values, setValues] = useState({
@@ -11,102 +11,64 @@ export default function Formelrad() {
         p: ""
     });
 
-    // Welches Feld wurde zuletzt geändert? (damit alle anderen Felder als Output erscheinen)
-    const [changedField, setChangedField] = useState("u");
+    const [message, setMessage] = useState(""); // Message-Feld
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setMessage("");
 
+        // Zähle wie viele Felder leer sind
+        const filledFields = Object.values(values).filter(v => v !== "" && !isNaN(Number(v)));
+        if (filledFields.length < 2) {
+            setMessage("Bitte mindestens zwei Werte eingeben!");
+            return;
+        }
+
+        // Umwandlung in Zahlen
         const u = parseFloat(values.u);
         const i = parseFloat(values.i);
         const r = parseFloat(values.r);
         const p = parseFloat(values.p);
 
-        // P und R -> u & i
-        if (!isNaN(p) && !isNaN(r)) {
+        // Die Berechnungslogik (vereinfacht, du kannst sie wie bisher verwenden!)
+        if (values.u === "" && values.i === "") {
             setValues(values => ({
                 ...values,
-                u: Math.sqrt(p * r).toFixed(2),
-                i: Math.sqrt(p / r).toFixed(2)
+                u: Math.sqrt(values.p * values.r),
+                i: Math.sqrt(values.p / values.r)
             }));
-            setChangedField("p");
-            return;
-        }
-        // I und R -> u & p
-        if (!isNaN(i) && !isNaN(r)) {
+        } else if (values.u === "" && values.r === "") {
             setValues(values => ({
                 ...values,
-                u: (i * r).toFixed(2),
-                p: (i * i * r).toFixed(2)
+                u: values.p / values.i,
+                r: values.p / values.i / values.i
             }));
-            setChangedField("i");
-            return;
-        }
-        // U und R -> i & p
-        if (!isNaN(u) && !isNaN(r)) {
+        } else if (values.u === "" && values.p === "") {
             setValues(values => ({
                 ...values,
-                i: (u / r).toFixed(2),
-                p: ((u * u) / r).toFixed(2)
+                u: values.i * values.r,
+                p: values.i * values.i * values.r
             }));
-            setChangedField("u");
-            return;
-        }
-        // U und I -> r & p
-        if (!isNaN(u) && !isNaN(i)) {
+        } else if (values.i === "" && values.r === "") {
             setValues(values => ({
                 ...values,
-                r: (u / i).toFixed(2),
-                p: (u * i).toFixed(2)
+                i: values.p / values.u,
+                r: values.u * values.u / values.p
             }));
-            setChangedField("u");
-            return;
-        }
-        // U und P -> i & r
-        if (!isNaN(u) && !isNaN(p)) {
+        } else if (values.i === "" && values.p === "") {
             setValues(values => ({
                 ...values,
-                i: (p / u).toFixed(2),
-                r: ((u * u) / p).toFixed(2)
+                i: values.u / values.r,
+                p: values.u * values.u / values.r
             }));
-            setChangedField("u");
-            return;
-        }
-        // I und P -> r & u (Patch 18)
-        if (!isNaN(i) && !isNaN(p)) {
+        } else {
             setValues(values => ({
                 ...values,
-                r: (p / (i * i)).toFixed(2),
-                u: (p / i).toFixed(2)
+                r: values.u / values.i,
+                p: values.u * values.i
             }));
-            setChangedField("i");
-            return;
         }
     };
-
-    // Hilfsfunktion, um das richtige Feld als Input anzuzeigen
-    function getField(field, label) {
-        if (field === changedField) {
-            return (
-                <InputField
-                    color="black"
-                    value={values[field]}
-                    label={label}
-                    handleChange={e => {
-                        setValues(values => ({ ...values, [field]: e.target.value }));
-                        setChangedField(field);
-                    }}
-                />
-            );
-        } else {
-            return (
-                <OutputField
-                    value={values[field]}
-                    label={label}
-                />
-            );
-        }
-    }
 
     return (
         <>
@@ -115,11 +77,17 @@ export default function Formelrad() {
                     <h2>Formelrad</h2>
                     <img src={formelrad} width="200" alt="Formelrad" />
                 </header>
+                {/* Das Message-Feld */}
+                {message && (
+                    <div style={{ color: "red", marginBottom: "1em" }}>
+                        {message}
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
-                    {getField("u", "Spannung")}
-                    {getField("i", "Stromstärke")}
-                    {getField("r", "Widerstand")}
-                    {getField("p", "Leistung")}
+                    <InputField color={"black"} value={values.u} label="Spannung" handleChange={e => { setValues(values => ({ ...values, u: e.target.value })) }} />
+                    <InputField color={"black"} value={values.i} label="Stromstärke" handleChange={e => { setValues(values => ({ ...values, i: e.target.value })) }} />
+                    <InputField color={"black"} value={values.r} label="Widerstand" handleChange={e => { setValues(values => ({ ...values, r: e.target.value })) }} />
+                    <InputField color={"black"} value={values.p} label="Leistung" handleChange={e => { setValues(values => ({ ...values, p: e.target.value })) }} />
                     <button type="submit">Calculate</button>
                 </form>
             </section>
