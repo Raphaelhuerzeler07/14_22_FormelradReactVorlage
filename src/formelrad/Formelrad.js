@@ -1,5 +1,7 @@
 import { useState } from "react";
+import '../css/mvp.css';
 import formelrad from "../image/formelradelektronik.gif";
+import InputField from "../formular/InputField";
 
 export default function Formelrad() {
     const [values, setValues] = useState({
@@ -18,86 +20,49 @@ export default function Formelrad() {
         const p = parseFloat(values.p);
 
         if (!isNaN(p) && !isNaN(i)) {
-            const u = p / i;
-            setValues(values => ({ ...values, u: u.toFixed(2) }));
+            setValues(values => ({ ...values, u: (p / i).toFixed(2) }));
         } else if (!isNaN(p) && !isNaN(r)) {
-            const u = Math.sqrt(p * r);
-            const i = Math.sqrt(p / r);
             setValues(values => ({
                 ...values,
-                u: u.toFixed(2),
-                i: i.toFixed(2)
+                u: Math.sqrt(p * r).toFixed(2),
+                i: Math.sqrt(p / r).toFixed(2)
             }));
         } else if (!isNaN(i) && !isNaN(r)) {
-            const u = i * r;
-            const p = i * i * r;
             setValues(values => ({
                 ...values,
-                u: u.toFixed(2),
-                p: p.toFixed(2)
+                u: (i * r).toFixed(2),
+                p: (i * i * r).toFixed(2)
             }));
         } else if (!isNaN(u) && !isNaN(r)) {
-            const i = u / r;
-            const p = (u * u) / r;
             setValues(values => ({
                 ...values,
-                i: i.toFixed(2),
-                p: p.toFixed(2)
+                i: (u / r).toFixed(2),
+                p: ((u * u) / r).toFixed(2)
             }));
         } else if (!isNaN(u) && !isNaN(i)) {
-            const r = u / i;
-            const p = u * i;
             setValues(values => ({
                 ...values,
-                r: r.toFixed(2),
-                p: p.toFixed(2)
+                r: (u / i).toFixed(2),
+                p: (u * i).toFixed(2)
             }));
         }
     }
 
     return (
         <>
-            <h2>Formelrad</h2>
-            <img src={formelrad} width="200" alt="Formelrad" />
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Spannung</label>
-                    <input
-                        value={values.u}
-                        onChange={e =>
-                            setValues(values => ({ ...values, u: e.target.value }))
-                        }
-                    />
-                </div>
-                <div>
-                    <label>Strom</label>
-                    <input
-                        value={values.i}
-                        onChange={e =>
-                            setValues(values => ({ ...values, i: e.target.value }))
-                        }
-                    />
-                </div>
-                <div>
-                    <label>Widerstand</label>
-                    <input
-                        value={values.r}
-                        onChange={e =>
-                            setValues(values => ({ ...values, r: e.target.value }))
-                        }
-                    />
-                </div>
-                <div>
-                    <label>Leistung</label>
-                    <input
-                        value={values.p}
-                        onChange={e =>
-                            setValues(values => ({ ...values, p: e.target.value }))
-                        }
-                    />
-                </div>
-                <button type="submit">Calculate</button>
-            </form>
+            <section>
+                <header>
+                    <h2>Formelrad</h2>
+                    <img src={formelrad} width="200" alt="Formelrad" />
+                </header>
+                <form onSubmit={handleSubmit}>
+                    <InputField color="black" value={values.u} label="Spannung" handleChange={e => setValues(values => ({ ...values, u: e.target.value }))} />
+                    <InputField color="black" value={values.i} label="Strom" handleChange={e => setValues(values => ({ ...values, i: e.target.value }))} />
+                    <InputField color="black" value={values.r} label="Widerstand" handleChange={e => setValues(values => ({ ...values, r: e.target.value }))} />
+                    <InputField color="black" value={values.p} label="Leistung" handleChange={e => setValues(values => ({ ...values, p: e.target.value }))} />
+                    <button type="submit">Calculate</button>
+                </form>
+            </section>
         </>
     );
 }
