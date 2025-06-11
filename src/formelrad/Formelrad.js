@@ -29,7 +29,7 @@ export default function Formelrad() {
                 u: Math.sqrt(p * r).toFixed(2),
                 i: Math.sqrt(p / r).toFixed(2)
             }));
-            setChangedField("p"); // z.B. nach P als Eingabe
+            setChangedField("p");
             return;
         }
         // I und R -> u & p
@@ -62,16 +62,6 @@ export default function Formelrad() {
             setChangedField("u");
             return;
         }
-        // P und I -> u & r
-        if (!isNaN(p) && !isNaN(i)) {
-            setValues(values => ({
-                ...values,
-                u: (p / i).toFixed(2),
-                r: (p / (i * i)).toFixed(2)
-            }));
-            setChangedField("p");
-            return;
-        }
         // U und P -> i & r
         if (!isNaN(u) && !isNaN(p)) {
             setValues(values => ({
@@ -80,6 +70,16 @@ export default function Formelrad() {
                 r: ((u * u) / p).toFixed(2)
             }));
             setChangedField("u");
+            return;
+        }
+        // I und P -> r & u (Patch 18)
+        if (!isNaN(i) && !isNaN(p)) {
+            setValues(values => ({
+                ...values,
+                r: (p / (i * i)).toFixed(2),
+                u: (p / i).toFixed(2)
+            }));
+            setChangedField("i");
             return;
         }
     };
